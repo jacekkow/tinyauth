@@ -99,7 +99,12 @@ func (app *BootstrapApp) Setup() error {
 	}
 
 	// Get cookie domain
-	cookieDomain, err := utils.GetCookieDomain(app.context.appUrl)
+	cookieDomainResolver := utils.GetCookieDomain
+	if app.config.Auth.SingleCookieDomain {
+		cookieDomainResolver = utils.GetCookieSingleDomain
+	}
+
+	cookieDomain, err := cookieDomainResolver(app.context.appUrl)
 
 	if err != nil {
 		return err
